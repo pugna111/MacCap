@@ -198,13 +198,15 @@ func exactMatchConfiguration(maximumDisplacement: Int) -> VerticalMatchConfigura
 }
 
 func syntheticContent(width: Int, height: Int) -> RGBAImage {
-    let rows = (0..<height).map { y in
-        (0..<width).map { x -> RGBA8 in
+    var pixels: [RGBA8] = []
+    pixels.reserveCapacity(width * height)
+    for y in 0..<height {
+        for x in 0..<width {
             let value = UInt8((y * 37 + x * 19 + y * x * 3) % 251)
-            return RGBA8(red: value, green: value, blue: value)
+            pixels.append(RGBA8(red: value, green: value, blue: value))
         }
     }
-    return try! RGBAImage(rows: rows)
+    return try! RGBAImage(width: width, height: height, pixels: pixels)
 }
 
 func frame(from content: RGBAImage, startRow: Int, height: Int) throws -> RGBAImage {
