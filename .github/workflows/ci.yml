@@ -1,0 +1,25 @@
+name: macOS CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - name: Build
+        run: xcrun swift build
+      - name: Test
+        run: xcrun swift test
+      - name: Validate package resources
+        run: |
+          plutil -lint Resources/Info.plist
+          bash -n scripts/build-app.sh scripts/create-dmg.sh scripts/notarize.sh scripts/release.sh
